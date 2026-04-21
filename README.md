@@ -1,5 +1,9 @@
 # Sub2API
 
+```
+docker build -t sub2api-custom:latest .
+```
+
 <div align="center">
 
 [![Go](https://img.shields.io/badge/Go-1.25.7-00ADD8.svg)](https://golang.org/)
