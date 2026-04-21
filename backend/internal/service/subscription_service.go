@@ -680,11 +680,6 @@ func normalizeSubscriptionStatus(subs []UserSubscription) {
 	}
 }
 
-// startOfDay 返回给定时间所在日期的零点（保持原时区）
-func startOfDay(t time.Time) time.Time {
-	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-}
-
 // CheckAndActivateWindow 检查并激活窗口（首次使用时）
 func (s *SubscriptionService) CheckAndActivateWindow(ctx context.Context, sub *UserSubscription) error {
 	if sub.IsWindowActivated() {
@@ -692,7 +687,7 @@ func (s *SubscriptionService) CheckAndActivateWindow(ctx context.Context, sub *U
 	}
 
 	// 使用当天零点作为窗口起始时间
-	windowStart := startOfDay(time.Now())
+	windowStart := time.Now()
 	return s.userSubRepo.ActivateWindows(ctx, sub.ID, windowStart)
 }
 
@@ -706,7 +701,7 @@ func (s *SubscriptionService) AdminResetQuota(ctx context.Context, subscriptionI
 	if err != nil {
 		return nil, err
 	}
-	windowStart := startOfDay(time.Now())
+	windowStart := time.Now()
 	if resetDaily {
 		if err := s.userSubRepo.ResetDailyUsage(ctx, sub.ID, windowStart); err != nil {
 			return nil, err
@@ -739,7 +734,7 @@ func (s *SubscriptionService) AdminResetQuota(ctx context.Context, subscriptionI
 // CheckAndResetWindows 检查并重置过期的窗口
 func (s *SubscriptionService) CheckAndResetWindows(ctx context.Context, sub *UserSubscription) error {
 	// 使用当天零点作为新窗口起始时间
-	windowStart := startOfDay(time.Now())
+	windowStart := time.Now()
 	needsInvalidateCache := false
 
 	// 日窗口重置（24小时）
